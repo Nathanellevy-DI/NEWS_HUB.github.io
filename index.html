@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#dc0000">
+    <meta name="theme-color" content="#c41e3a">
     <title>⚡ NewsHub - Lightning-Fast News</title>
     <meta name="description" content="Stay informed with lightning-fast news updates from around the world">
 
@@ -24,39 +24,46 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/features/news.css">
+    <link rel="stylesheet" href="css/features/search-featured.css">
+    <link rel="stylesheet" href="css/features/article-reader.css">
+    <link rel="stylesheet" href="css/features/custom-categories.css">
+    <link rel="stylesheet" href="css/features/embed-indicators.css">
 </head>
 
 <body>
-    <!-- Hero Section - Flash Style -->
+    <!-- Hero Section - Redesigned -->
     <header class="hero">
         <div class="hero-content">
             <h1 class="hero-title">⚡ NEWSHUB</h1>
             <p class="hero-subtitle">Lightning-Fast News from Around the World</p>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" class="search-input"
+                        placeholder="Search for topics, keywords, or phrases..." autocomplete="off">
+                    <button id="search-btn" class="search-btn">
+                        <span class="search-icon">🔍</span>
+                        Search
+                    </button>
+                    <button id="clear-search-btn" class="clear-search-btn" style="display: none;">
+                        ✕
+                    </button>
+                </div>
+                <div id="search-suggestions" class="search-suggestions" style="display: none;"></div>
+            </div>
         </div>
     </header>
 
     <!-- Main Container -->
     <main class="container">
-        <!-- Statistics Dashboard -->
-        <section class="stats-section">
-            <div id="news-stats" class="stats-container">
-                <!-- Stats will be populated by JavaScript -->
-                <div class="stat-card">
-                    <div class="stat-icon">📰</div>
-                    <div class="stat-value">--</div>
-                    <div class="stat-label">Articles</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📡</div>
-                    <div class="stat-value">--</div>
-                    <div class="stat-label">Sources</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⚡</div>
-                    <div class="stat-value">--</div>
-                    <div class="stat-label">Last 24h</div>
-                </div>
-            </div>
+        <!-- Featured Story Section -->
+        <section id="featured-story-section" class="featured-story-section" style="display: none;">
+            <h2 class="section-title">
+                <span class="icon">🔥</span>
+                Top Story
+            </h2>
+            <div id="featured-story" class="featured-story"></div>
         </section>
 
         <!-- News Section -->
@@ -64,7 +71,7 @@
             <div class="section-header">
                 <h2 class="section-title">
                     <span class="icon">📰</span>
-                    Latest Headlines
+                    <span id="section-title-text">Latest Headlines</span>
                 </h2>
                 <div class="category-filters">
                     <button class="filter-btn active" data-category="general">All News</button>
@@ -74,6 +81,9 @@
                     <button class="filter-btn" data-category="entertainment">Entertainment</button>
                     <button class="filter-btn" data-category="science">Science</button>
                     <button class="filter-btn" data-category="health">Health</button>
+                    <button id="add-category-btn" class="filter-btn add-category-btn">
+                        + Add Category
+                    </button>
                 </div>
             </div>
 
@@ -91,6 +101,74 @@
         </section>
     </main>
 
+    <!-- Article Reader Modal -->
+    <div id="article-modal" class="article-modal">
+        <div class="article-modal-content">
+            <div class="article-modal-header">
+                <h3 id="article-modal-title">Article</h3>
+                <button id="close-article-modal" class="close-modal-btn">✕</button>
+            </div>
+            <div class="article-modal-body">
+                <div id="article-preview" class="article-preview">
+                    <img id="article-preview-image" class="article-preview-image" alt="">
+                    <div class="article-preview-content">
+                        <div class="article-preview-source"></div>
+                        <h2 class="article-preview-title"></h2>
+                        <p class="article-preview-description"></p>
+                    </div>
+                </div>
+                <div class="article-actions">
+                    <button id="open-in-app-btn" class="btn-primary">
+                        📖 Read in NewsHub
+                    </button>
+                    <button id="open-external-btn" class="btn-secondary">
+                        🔗 Open Original
+                    </button>
+                </div>
+                <div id="article-iframe-container" class="article-iframe-container" style="display: none;">
+                    <iframe id="article-iframe" class="article-iframe"
+                        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                    <div id="iframe-error" class="iframe-error" style="display: none;">
+                        <p>⚠️ This article cannot be displayed in NewsHub.</p>
+                        <button id="fallback-external-btn" class="btn-primary">Open in New Tab</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Category Modal -->
+    <div id="category-modal" class="category-modal">
+        <div class="category-modal-content">
+            <div class="category-modal-header">
+                <h3>Create Custom Category</h3>
+                <button id="close-category-modal" class="close-modal-btn">✕</button>
+            </div>
+            <div class="category-modal-body">
+                <div class="form-group">
+                    <label for="category-name">Category Name</label>
+                    <input type="text" id="category-name" placeholder="e.g., Crypto, AI, Climate">
+                </div>
+                <div class="form-group">
+                    <label for="category-keywords">Keywords (comma-separated)</label>
+                    <input type="text" id="category-keywords" placeholder="e.g., bitcoin, ethereum, cryptocurrency">
+                    <small>Articles matching any of these keywords will appear in this category</small>
+                </div>
+                <div class="form-group">
+                    <label for="category-color">Button Color</label>
+                    <div class="color-picker">
+                        <input type="color" id="category-color" value="#c41e3a">
+                        <span id="color-preview" class="color-preview"></span>
+                    </div>
+                </div>
+                <div class="category-modal-actions">
+                    <button id="save-category-btn" class="btn-primary">Save Category</button>
+                    <button id="cancel-category-btn" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <p>⚡ 2026 NewsHub - Lightning-Fast News Powered by NewsAPI</p>
@@ -98,6 +176,9 @@
 
     <!-- Scripts -->
     <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/custom-categories.js"></script>
+    <script src="js/article-reader.js"></script>
     <script src="js/apis/news.js"></script>
 </body>
 
