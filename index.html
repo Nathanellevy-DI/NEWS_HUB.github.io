@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#dc0000">
+    <title>⚡ NewsHub - Lightning-Fast News</title>
+    <meta name="description" content="Stay informed with lightning-fast news updates from around the world">
+
+    <!-- PWA Support -->
+    <link rel="apple-touch-icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/features/news.css">
+</head>
+
+<body>
+    <!-- Hero Section - Flash Style -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">⚡ NEWSHUB</h1>
+            <p class="hero-subtitle">Lightning-Fast News from Around the World</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Statistics Dashboard -->
+        <section class="stats-section">
+            <div id="news-stats" class="stats-container">
+                <!-- Stats will be populated by JavaScript -->
+                <div class="stat-card">
+                    <div class="stat-icon">📰</div>
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Articles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📡</div>
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Sources</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value">--</div>
+                    <div class="stat-label">Last 24h</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news-section" class="feature-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">📰</span>
+                    Latest Headlines
+                </h2>
+                <div class="category-filters">
+                    <button class="filter-btn active" data-category="general">All News</button>
+                    <button class="filter-btn" data-category="technology">Tech</button>
+                    <button class="filter-btn" data-category="business">Business</button>
+                    <button class="filter-btn" data-category="sports">Sports</button>
+                    <button class="filter-btn" data-category="entertainment">Entertainment</button>
+                    <button class="filter-btn" data-category="science">Science</button>
+                    <button class="filter-btn" data-category="health">Health</button>
+                </div>
+            </div>
+
+            <div id="news-loading" class="loading">
+                <div class="spinner"></div>
+                <p>⚡ Loading lightning-fast news...</p>
+            </div>
+
+            <div id="news-error" class="error-message" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <p>Unable to load news. Please try again later.</p>
+            </div>
+
+            <div id="news-grid" class="news-grid"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>⚡ 2026 NewsHub - Lightning-Fast News Powered by NewsAPI</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/apis/news.js"></script>
+</body>
+
+</html>
