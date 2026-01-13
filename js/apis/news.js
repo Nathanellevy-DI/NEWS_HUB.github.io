@@ -8,30 +8,45 @@ let currentCategory = 'general';
 let currentCountry = 'us';
 let newsData = [];
 
-// List of known domains that block iframe embedding
-const IFRAME_BLOCKED_DOMAINS = [
-    'bbc.com',
-    'bbc.co.uk',
-    'nytimes.com',
-    'wsj.com',
-    'washingtonpost.com',
-    'theguardian.com',
-    'cnn.com',
-    'foxnews.com',
-    'reuters.com',
-    'bloomberg.com',
-    'forbes.com',
-    'espn.com',
-    'techcrunch.com',
-    'wired.com',
-    'theverge.com'
-];
+// Article cache system for background preloading
+const articleCache = {
+    data: {},
+    timestamps: {},
+    CACHE_DURATION: 15 * 60 * 1000, // 15 minutes in milliseconds
 
+    set(category, articles) {
+        this.data[category] = articles;
+        this.timestamps[category] = Date.now();
+    },
+
+    get(category) {
+        const timestamp = this.timestamps[category];
+        if (!timestamp) return null;
+
+        // Check if cache is expired
+        if (Date.now() - timestamp > this.CACHE_DURATION) {
+            delete this.data[category];
+            delete this.timestamps[category];
+            return null;
+        }
+
+        return this.data[category];
+    },
+
+    has(category) {
+        return this.get(category) !== null;
+    }
+};
 // Initialize news feature
 document.addEventListener('DOMContentLoaded', () => {
     initializeNewsFilters();
     fetchNews(currentCategory);
     fetchFeaturedStory();
+
+    // Background preload other categories after initial load
+    setTimeout(() => {
+        preloadCategories();
+    }, 2000); // Wait 2 seconds after initial load
 });
 
 // Set up category filter buttons
@@ -72,23 +87,16 @@ function initializeNewsFilters() {
             }
         });
 
+        // Prefetch on hover for instant loading
+        button.addEventListener('mouseenter', () => {
+            const category = button.dataset.category;
+            if (category && !articleCache.has(category)) {
+                prefetchCategory(category);
+            }
+        });
+
         button.dataset.hasListener = 'true';
     });
-}
-
-// Check if a URL's domain blocks iframe embedding
-function isIframeBlocked(url) {
-    try {
-        const urlObj = new URL(url);
-        const hostname = urlObj.hostname.toLowerCase();
-
-        // Check against known blocked domains
-        return IFRAME_BLOCKED_DOMAINS.some(domain =>
-            hostname.includes(domain)
-        );
-    } catch (e) {
-        return false;
-    }
 }
 
 // Fetch featured/top story
@@ -99,7 +107,7 @@ async function fetchFeaturedStory() {
         const params = new URLSearchParams({
             apiKey: NEWS_API_KEY,
             country: currentCountry,
-            pageSize: 1
+            pageSize: 5 // Fetch more to ensure we get one with an image
         });
 
         const apiUrl = `${endpoint}?${params}`;
@@ -109,7 +117,18 @@ async function fetchFeaturedStory() {
         const data = await response.json();
 
         if (data.status === 'ok' && data.articles && data.articles.length > 0) {
-            displayFeaturedStory(data.articles[0]);
+            // Find first article with an image
+            const articleWithImage = data.articles.find(article =>
+                article.urlToImage && article.urlToImage.trim() !== ''
+            );
+
+            if (articleWithImage) {
+                displayFeaturedStory(articleWithImage);
+            } else {
+                // Hide featured section if no articles with images
+                const featuredSection = document.getElementById('featured-story-section');
+                if (featuredSection) featuredSection.style.display = 'none';
+            }
         }
     } catch (error) {
         console.error('Error fetching featured story:', error);
@@ -130,12 +149,6 @@ function displayFeaturedStory(article) {
         ? `<img src="${article.urlToImage}" alt="${article.title}" class="featured-image">`
         : '<div class="featured-image-placeholder">📰</div>';
 
-    // Add iframe availability indicator
-    const canEmbed = !isIframeBlocked(article.url);
-    const embedBadge = canEmbed
-        ? '<span class="embed-badge embed-available">📖 Read in NewsHub</span>'
-        : '<span class="embed-badge embed-blocked">🔗 External Only</span>';
-
     featuredStory.innerHTML = `
         <div class="featured-card" onclick='openArticleModal(${JSON.stringify(article).replace(/'/g, "&apos;")})'>
             ${imageHTML}
@@ -146,9 +159,8 @@ function displayFeaturedStory(article) {
                 </div>
                 <h3 class="featured-title">${article.title}</h3>
                 <p class="featured-description">${article.description || ''}</p>
-                ${embedBadge}
                 <button class="featured-read-btn">
-                    Read Full Story ⚡
+                    Read Full Story →
                 </button>
             </div>
         </div>
@@ -161,6 +173,15 @@ function displayFeaturedStory(article) {
 
 // Fetch news from NewsAPI with CORS proxy
 async function fetchNews(category = 'general') {
+    // Check cache first
+    const cachedArticles = articleCache.get(category);
+    if (cachedArticles) {
+        console.log(`Loading ${category} from cache`);
+        newsData = cachedArticles;
+        displayNews(cachedArticles);
+        return;
+    }
+
     setLoadingState('news', true);
 
     try {
@@ -170,7 +191,7 @@ async function fetchNews(category = 'general') {
             apiKey: NEWS_API_KEY,
             country: currentCountry,
             category: category,
-            pageSize: 20
+            pageSize: 50 // Fetch more to ensure we have enough with images
         });
 
         const apiUrl = `${endpoint}?${params}`;
@@ -185,8 +206,22 @@ async function fetchNews(category = 'general') {
         const data = await response.json();
 
         if (data.status === 'ok' && data.articles) {
-            newsData = data.articles;
-            displayNews(data.articles);
+            // Filter articles to only include those with images
+            const articlesWithImages = data.articles.filter(article =>
+                article.title &&
+                article.title !== '[Removed]' &&
+                article.description &&
+                article.description !== '[Removed]' &&
+                article.urlToImage &&
+                article.urlToImage.trim() !== ''
+            ).slice(0, 20); // Take first 20 articles with images
+
+            newsData = articlesWithImages;
+
+            // Store in cache
+            articleCache.set(category, articlesWithImages);
+
+            displayNews(articlesWithImages);
         } else {
             throw new Error('Invalid response from News API');
         }
@@ -243,12 +278,6 @@ function createNewsCard(article, index) {
     // Add lightning bolt to first 3 articles (trending)
     const trendingBadge = index < 3 ? '<span class="trending-badge">⚡ TRENDING</span>' : '';
 
-    // Check if article can be embedded
-    const canEmbed = !isIframeBlocked(url);
-    const embedIndicator = canEmbed
-        ? '<span class="embed-indicator" title="Can be read in NewsHub">📖</span>'
-        : '<span class="embed-indicator blocked" title="Opens in new tab">🔗</span>';
-
     // Escape quotes for JSON
     const articleJSON = JSON.stringify(article).replace(/'/g, "&apos;");
 
@@ -265,9 +294,8 @@ function createNewsCard(article, index) {
                 <p class="news-description">${description || 'No description available.'}</p>
                 <div class="news-footer">
                     <span class="read-more">
-                        Read Article ⚡
+                        Read Article 🔗
                     </span>
-                    ${embedIndicator}
                 </div>
             </div>
         </article>
@@ -279,5 +307,68 @@ function refreshNews() {
     fetchNews(currentCategory);
 }
 
-// Export for use in article-reader.js
-window.isIframeBlocked = isIframeBlocked;
+// Background preload all categories
+async function preloadCategories() {
+    const categories = ['technology', 'business', 'sports', 'entertainment', 'science', 'health'];
+
+    console.log('Starting background preload of categories...');
+
+    // Preload categories that aren't already cached
+    const preloadPromises = categories
+        .filter(cat => !articleCache.has(cat))
+        .map(cat => prefetchCategory(cat));
+
+    await Promise.all(preloadPromises);
+    console.log('Background preload complete!');
+}
+
+// Prefetch a single category (used for hover and background preload)
+async function prefetchCategory(category) {
+    // Don't prefetch if already cached
+    if (articleCache.has(category)) {
+        return;
+    }
+
+    try {
+        const corsProxy = 'https://api.allorigins.win/raw?url=';
+        const endpoint = `${NEWS_API_BASE_URL}/top-headlines`;
+        const params = new URLSearchParams({
+            apiKey: NEWS_API_KEY,
+            country: currentCountry,
+            category: category,
+            pageSize: 50
+        });
+
+        const apiUrl = `${endpoint}?${params}`;
+        const proxiedUrl = `${corsProxy}${encodeURIComponent(apiUrl)}`;
+
+        const response = await fetch(proxiedUrl);
+
+        if (!response.ok) {
+            console.warn(`Failed to prefetch ${category}`);
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.status === 'ok' && data.articles) {
+            // Filter articles with images
+            const articlesWithImages = data.articles.filter(article =>
+                article.title &&
+                article.title !== '[Removed]' &&
+                article.description &&
+                article.description !== '[Removed]' &&
+                article.urlToImage &&
+                article.urlToImage.trim() !== ''
+            ).slice(0, 20);
+
+            // Store in cache
+            articleCache.set(category, articlesWithImages);
+            console.log(`Prefetched ${category}: ${articlesWithImages.length} articles`);
+        }
+    } catch (error) {
+        console.warn(`Error prefetching ${category}:`, error);
+    }
+}
+
+

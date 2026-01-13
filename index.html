@@ -25,9 +25,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/features/news.css">
     <link rel="stylesheet" href="css/features/search-featured.css">
-    <link rel="stylesheet" href="css/features/article-reader.css">
     <link rel="stylesheet" href="css/features/custom-categories.css">
-    <link rel="stylesheet" href="css/features/embed-indicators.css">
 </head>
 
 <body>
@@ -100,42 +98,6 @@
             <div id="news-grid" class="news-grid"></div>
         </section>
     </main>
-
-    <!-- Article Reader Modal -->
-    <div id="article-modal" class="article-modal">
-        <div class="article-modal-content">
-            <div class="article-modal-header">
-                <h3 id="article-modal-title">Article</h3>
-                <button id="close-article-modal" class="close-modal-btn">✕</button>
-            </div>
-            <div class="article-modal-body">
-                <div id="article-preview" class="article-preview">
-                    <img id="article-preview-image" class="article-preview-image" alt="">
-                    <div class="article-preview-content">
-                        <div class="article-preview-source"></div>
-                        <h2 class="article-preview-title"></h2>
-                        <p class="article-preview-description"></p>
-                    </div>
-                </div>
-                <div class="article-actions">
-                    <button id="open-in-app-btn" class="btn-primary">
-                        📖 Read in NewsHub
-                    </button>
-                    <button id="open-external-btn" class="btn-secondary">
-                        🔗 Open Original
-                    </button>
-                </div>
-                <div id="article-iframe-container" class="article-iframe-container" style="display: none;">
-                    <iframe id="article-iframe" class="article-iframe"
-                        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
-                    <div id="iframe-error" class="iframe-error" style="display: none;">
-                        <p>⚠️ This article cannot be displayed in NewsHub.</p>
-                        <button id="fallback-external-btn" class="btn-primary">Open in New Tab</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Custom Category Modal -->
     <div id="category-modal" class="category-modal">
