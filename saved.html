@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00bcd4">
+    <title>Saved Articles - NewsHub</title>
+    <meta name="description" content="Your saved articles">
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/features/news.css">
+    <link rel="stylesheet" href="css/features/sidebar-pages.css">
+    <link rel="stylesheet" href="css/features/bottom-nav.css">
+    <link rel="stylesheet" href="css/features/article-reader.css">
+    <link rel="stylesheet" href="css/features/custom-categories.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo-newshub.png" alt="NewsHub Logo" class="sidebar-logo">
+            <h1 class="sidebar-title">NEWS HUB</h1>
+            <p class="sidebar-subtitle">OVER GLOBAL TITLES</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>HOME</span>
+            </a>
+            <a href="categories.html" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>CATEGORIES</span>
+            </a>
+            <a href="saved.html" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>SAVED</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M12 1v6m0 6v6m5.66-13.66l-4.24 4.24m0 6.84l-4.24 4.24M23 12h-6m-6 0H1m17.66 5.66l-4.24-4.24m0-6.84l-4.24-4.24">
+                    </path>
+                </svg>
+                <span>SETTINGS</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="stats-display">
+                <div class="stat-number">150,000+</div>
+                <div class="stat-label">TITLES AVAILABLE</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container">
+            <section class="feature-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="icon">🔖</span>
+                        Saved Articles
+                    </h2>
+                    <button id="clear-saved-btn" class="filter-btn">Clear All</button>
+                </div>
+                <div id="saved-articles-grid" class="news-grid"></div>
+                <div id="saved-empty" class="empty-state" style="display: none;">
+                    <span class="empty-icon">📭</span>
+                    <h3>No Saved Articles</h3>
+                    <p>Articles you save will appear here</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-item">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span class="bottom-nav-label">Home</span>
+        </a>
+        <a href="categories.html" class="bottom-nav-item">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span class="bottom-nav-label">Categories</span>
+        </a>
+        <a href="saved.html" class="bottom-nav-item active">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="bottom-nav-label">Saved</span>
+        </a>
+        <a href="settings.html" class="bottom-nav-item">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                    d="M12 1v6m0 6v6m5.66-13.66l-4.24 4.24m0 6.84l-4.24 4.24M23 12h-6m-6 0H1m17.66 5.66l-4.24-4.24m0-6.84l-4.24-4.24">
+                </path>
+            </svg>
+            <span class="bottom-nav-label">Settings</span>
+        </a>
+    </nav>
+
+    <!-- Article Reader Modal -->
+    <div id="article-reader-modal" class="article-modal">
+        <div class="article-modal-content">
+            <div class="article-modal-header">
+                <button id="close-article-modal" class="close-article-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <a id="article-external-link" href="#" target="_blank" class="external-link-btn"
+                    title="Open in new tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+            <div class="article-modal-body">
+                <div id="article-loading" class="article-loading">
+                    <div class="spinner"></div>
+                    <p>Loading article...</p>
+                </div>
+                <div id="article-content" class="article-content" style="display: none;">
+                    <div class="article-meta">
+                        <span id="article-source" class="article-source"></span>
+                        <span id="article-date" class="article-date"></span>
+                    </div>
+                    <h1 id="article-title" class="article-title"></h1>
+                    <div id="article-author" class="article-author"></div>
+                    <img id="article-image" class="article-image" style="display: none;">
+                    <div id="article-body" class="article-body"></div>
+                </div>
+                <div id="article-error" class="article-error" style="display: none;">
+                    <span class="error-icon">⚠️</span>
+                    <p>Unable to load article content. This article may not be available for in-platform reading.</p>
+                    <a id="article-fallback-link" href="#" target="_blank" class="fallback-link">Open in new tab
+                        instead</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>⚡ 2026 NewsHub - Lightning-Fast News Powered by NewsAPI</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/article-reader.js"></script>
+    <script src="js/custom-categories.js"></script>
+    <script>
+        // Load and display saved articles
+        function loadSavedArticles() {
+            const grid = document.getElementById('saved-articles-grid');
+            const empty = document.getElementById('saved-empty');
+            const saved = JSON.parse(localStorage.getItem('savedArticles') || '[]');
+
+            if (saved.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'flex';
+                return;
+            }
+
+            empty.style.display = 'none';
+            grid.innerHTML = saved.map((article, index) => createNewsCard(article, index, true)).join('');
+
+            // Add click handlers
+            grid.querySelectorAll('.news-card').forEach((card, index) => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('.save-article-btn')) {
+                        openArticleModal(saved[index]);
+                    }
+                });
+            });
+
+            // Add save button handlers
+            grid.querySelectorAll('.save-article-btn').forEach((btn, index) => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleSaveArticle(saved[index]);
+                    loadSavedArticles(); // Reload to update UI
+                });
+            });
+        }
+
+        function createNewsCard(article, index, showSaveBtn = false) {
+            const imageHTML = article.urlToImage
+                ? `<img src="${article.urlToImage}" alt="${article.title}" class="news-image">`
+                : '<div class="news-image-placeholder">📰</div>';
+
+            const trendingBadge = index < 3 ? '<span class="trending-badge">⚡ TRENDING</span>' : '';
+            const isSaved = checkIfSaved(article);
+            const saveBtn = `<button class="save-article-btn" title="${isSaved ? 'Unsave' : 'Save'} article">${isSaved ? '🔖' : '🔗'}</button>`;
+
+            return `
+                <article class="news-card">
+                    ${trendingBadge}
+                    ${imageHTML}
+                    <div class="news-content">
+                        <div class="news-source">
+                            <span class="source-name">${article.source?.name || 'Unknown'}</span>
+                            <span class="news-date">${formatDate(article.publishedAt)}</span>
+                        </div>
+                        <h3 class="news-title">${article.title}</h3>
+                        <p class="news-description">${article.description || ''}</p>
+                        <div class="news-footer">
+                            <span class="read-more">Read Article →</span>
+                            ${saveBtn}
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function checkIfSaved(article) {
+            const saved = JSON.parse(localStorage.getItem('savedArticles') || '[]');
+            return saved.some(a => a.url === article.url);
+        }
+
+        function toggleSaveArticle(article) {
+            let saved = JSON.parse(localStorage.getItem('savedArticles') || '[]');
+            const index = saved.findIndex(a => a.url === article.url);
+
+            if (index > -1) {
+                saved.splice(index, 1);
+                showNotification('Article removed from saved', 'info');
+            } else {
+                saved.unshift(article);
+                showNotification('Article saved', 'success');
+            }
+
+            localStorage.setItem('savedArticles', JSON.stringify(saved));
+        }
+
+        // Clear all saved articles
+        document.getElementById('clear-saved-btn')?.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all saved articles?')) {
+                localStorage.removeItem('savedArticles');
+                loadSavedArticles();
+                showNotification('All saved articles cleared', 'info');
+            }
+        });
+
+        // Load articles on page load
+        document.addEventListener('DOMContentLoaded', loadSavedArticles);
+    </script>
+</body>
+
+</html>
