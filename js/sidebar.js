@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let currentPage = 'home';
 
 function initializeSidebar() {
-    const navItems = document.querySelectorAll('.nav-item');
+    const navItems = document.querySelectorAll('.nav-item, .bottom-nav-item');
 
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
