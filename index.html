@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#c41e3a">
-    <title>⚡ NewsHub - Lightning-Fast News</title>
+    <meta name="theme-color" content="#00bcd4">
+    <title>NewsHub - Over Global Titles</title>
     <meta name="description" content="Stay informed with lightning-fast news updates from around the world">
 
     <!-- PWA Support -->
@@ -26,78 +26,170 @@
     <link rel="stylesheet" href="css/features/news.css">
     <link rel="stylesheet" href="css/features/search-featured.css">
     <link rel="stylesheet" href="css/features/custom-categories.css">
+    <link rel="stylesheet" href="css/features/article-reader.css">
+    <link rel="stylesheet" href="css/features/sidebar-pages.css">
 </head>
 
 <body>
-    <!-- Hero Section - Redesigned -->
-    <header class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">⚡ NEWSHUB</h1>
-            <p class="hero-subtitle">Lightning-Fast News from Around the World</p>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo-newshub.png" alt="NewsHub Logo" class="sidebar-logo">
+            <div class="sidebar-brand">
+                <h1 class="brand-title">NEWS HUB</h1>
+                <p class="brand-subtitle">OVER GLOBAL TITLES</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="home">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>HOME</span>
+            </a>
+            <a href="#" class="nav-item" data-page="categories">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>CATEGORIES</span>
+            </a>
+            <a href="#" class="nav-item" data-page="saved">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>SAVED</span>
+            </a>
+            <a href="#" class="nav-item" data-page="settings">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M12 1v6m0 6v6m5.66-13.66l-4.24 4.24m0 6.84l-4.24 4.24M23 12h-6m-6 0H1m17.66 5.66l-4.24-4.24m0-6.84l-4.24-4.24">
+                    </path>
+                </svg>
+                <span>SETTINGS</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="stats-display">
+                <div class="stat-number">150,000+</div>
+                <div class="stat-label">TITLES AVAILABLE</div>
+            </div>
 
             <!-- Search Bar -->
             <div class="search-container">
                 <div class="search-wrapper">
-                    <input type="text" id="search-input" class="search-input"
-                        placeholder="Search for topics, keywords, or phrases..." autocomplete="off">
-                    <button id="search-btn" class="search-btn">
-                        <span class="search-icon">🔍</span>
-                        Search
-                    </button>
-                    <button id="clear-search-btn" class="clear-search-btn" style="display: none;">
-                        ✕
-                    </button>
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="SEARCH ALL NEWS..."
+                        autocomplete="off">
+                    <button id="clear-search-btn" class="clear-search-btn" style="display: none;">✕</button>
                 </div>
                 <div id="search-suggestions" class="search-suggestions" style="display: none;"></div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Container -->
-    <main class="container">
-        <!-- Featured Story Section -->
-        <section id="featured-story-section" class="featured-story-section" style="display: none;">
-            <h2 class="section-title">
-                <span class="icon">🔥</span>
-                Top Story
-            </h2>
-            <div id="featured-story" class="featured-story"></div>
-        </section>
-
-        <!-- News Section -->
-        <section id="news-section" class="feature-section">
-            <div class="section-header">
+        <!-- Main Container -->
+        <main class="container">
+            <!-- Featured Story Section -->
+            <section id="featured-story-section" class="featured-story-section" style="display: none;">
                 <h2 class="section-title">
-                    <span class="icon">📰</span>
-                    <span id="section-title-text">Latest Headlines</span>
+                    <span class="icon">🔥</span>
+                    Top Story
                 </h2>
-                <div class="category-filters">
-                    <button class="filter-btn active" data-category="general">All News</button>
-                    <button class="filter-btn" data-category="technology">Tech</button>
-                    <button class="filter-btn" data-category="business">Business</button>
-                    <button class="filter-btn" data-category="sports">Sports</button>
-                    <button class="filter-btn" data-category="entertainment">Entertainment</button>
-                    <button class="filter-btn" data-category="science">Science</button>
-                    <button class="filter-btn" data-category="health">Health</button>
-                    <button id="add-category-btn" class="filter-btn add-category-btn">
-                        + Add Category
-                    </button>
+                <div id="featured-story" class="featured-story"></div>
+            </section>
+
+            <!-- News Section -->
+            <section id="news-section" class="feature-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="icon">📰</span>
+                        <span id="section-title-text">Latest Headlines</span>
+                    </h2>
+                    <div class="category-filters">
+                        <button class="filter-btn active" data-category="general">All News</button>
+                        <button class="filter-btn" data-category="technology">Tech</button>
+                        <button class="filter-btn" data-category="business">Business</button>
+                        <button class="filter-btn" data-category="sports">Sports</button>
+                        <button class="filter-btn" data-category="entertainment">Entertainment</button>
+                        <button class="filter-btn" data-category="science">Science</button>
+                        <button class="filter-btn" data-category="health">Health</button>
+                        <button id="add-category-btn" class="filter-btn add-category-btn">
+                            + Add Category
+                        </button>
+                    </div>
+                </div>
+
+                <div id="news-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading news...</p>
+                </div>
+
+                <div id="news-error" class="error-message" style="display: none;">
+                    <span class="error-icon">⚠️</span>
+                    <p>Unable to load news. Please try again later.</p>
+                </div>
+
+                <div id="news-grid" class="news-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Article Reader Modal -->
+    <div id="article-reader-modal" class="article-modal">
+        <div class="article-modal-content">
+            <div class="article-modal-header">
+                <button id="close-article-modal" class="close-article-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <a id="article-external-link" href="#" target="_blank" class="external-link-btn"
+                    title="Open in new tab">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+            <div class="article-modal-body">
+                <div id="article-loading" class="article-loading">
+                    <div class="spinner"></div>
+                    <p>Loading article...</p>
+                </div>
+                <div id="article-content" class="article-content" style="display: none;">
+                    <div class="article-meta">
+                        <span id="article-source" class="article-source"></span>
+                        <span id="article-date" class="article-date"></span>
+                    </div>
+                    <h1 id="article-title" class="article-title"></h1>
+                    <div id="article-author" class="article-author"></div>
+                    <img id="article-image" class="article-image" style="display: none;">
+                    <div id="article-body" class="article-body"></div>
+                </div>
+                <div id="article-error" class="article-error" style="display: none;">
+                    <span class="error-icon">⚠️</span>
+                    <p>Unable to load article content. This article may not be available for in-platform reading.</p>
+                    <a id="article-fallback-link" href="#" target="_blank" class="fallback-link">Open in new tab
+                        instead</a>
                 </div>
             </div>
-
-            <div id="news-loading" class="loading">
-                <div class="spinner"></div>
-                <p>⚡ Loading lightning-fast news...</p>
-            </div>
-
-            <div id="news-error" class="error-message" style="display: none;">
-                <span class="error-icon">⚠️</span>
-                <p>Unable to load news. Please try again later.</p>
-            </div>
-
-            <div id="news-grid" class="news-grid"></div>
-        </section>
-    </main>
+        </div>
+    </div>
 
     <!-- Custom Category Modal -->
     <div id="category-modal" class="category-modal">
@@ -137,10 +229,12 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/security.js"></script>
     <script src="js/main.js"></script>
     <script src="js/search.js"></script>
     <script src="js/custom-categories.js"></script>
     <script src="js/article-reader.js"></script>
+    <script src="js/sidebar.js"></script>
     <script src="js/apis/news.js"></script>
 </body>
 
