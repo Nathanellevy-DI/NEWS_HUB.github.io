@@ -1,0 +1,137 @@
+/* ===================================
+   MOBILE BOTTOM NAVIGATION
+   =================================== */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--bg-tertiary);
+    display: none;
+    /* Hidden by default, shown on mobile */
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5rem 0;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    flex: 1;
+    max-width: 100px;
+}
+
+.bottom-nav-item:active {
+    transform: scale(0.95);
+}
+
+.bottom-nav-item.active {
+    color: var(--accent-cyan);
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+    stroke: var(--accent-cyan);
+}
+
+.bottom-nav-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+    transition: all var(--transition-base);
+}
+
+.bottom-nav-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* Show bottom nav on mobile, hide sidebar */
+@media (max-width: 768px) {
+    .bottom-nav {
+        display: flex;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+        padding-bottom: 70px;
+        /* Space for bottom nav */
+    }
+
+    /* Adjust footer for bottom nav */
+    .footer {
+        margin-bottom: 70px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .bottom-nav {
+        padding: 0.4rem 0;
+    }
+
+    .bottom-nav-item {
+        padding: 0.4rem 0.5rem;
+        gap: 0.2rem;
+    }
+
+    .bottom-nav-icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .bottom-nav-label {
+        font-size: 0.65rem;
+    }
+}
+
+/* Landscape mode - make bottom nav more compact */
+@media (max-height: 500px) and (orientation: landscape) {
+    .bottom-nav {
+        padding: 0.3rem 0;
+    }
+
+    .bottom-nav-item {
+        padding: 0.3rem 0.5rem;
+    }
+
+    .bottom-nav-label {
+        display: none;
+        /* Hide labels in landscape to save space */
+    }
+}
+
+/* PWA standalone mode detection */
+@media (display-mode: standalone) {
+    .bottom-nav {
+        /* Add safe area insets for devices with notches */
+        padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    }
+
+    .main-wrapper {
+        padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+}
+
+/* iOS specific adjustments */
+@supports (-webkit-touch-callout: none) {
+    .bottom-nav {
+        padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    }
+}
