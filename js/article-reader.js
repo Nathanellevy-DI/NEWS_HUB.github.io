@@ -17,6 +17,15 @@ articleModal?.addEventListener('click', (e) => {
     }
 });
 
+// External link button handler
+externalLink?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = externalLink.href;
+    if (url && url !== '#') {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+});
+
 // ESC key to close
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && articleModal?.classList.contains('active')) {
