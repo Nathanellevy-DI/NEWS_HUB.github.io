@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="css/features/bottom-nav.css">
     <link rel="stylesheet" href="css/features/article-reader.css">
     <link rel="stylesheet" href="css/features/custom-categories.css">
+    <link rel="stylesheet" href="css/features/folders.css">
+    <link rel="stylesheet" href="css/features/saved-articles.css">
 </head>
 
 <body>
@@ -194,26 +196,37 @@
     <script src="js/save-articles.js"></script>
     <script src="js/custom-categories.js"></script>
     <script>
+        // Current filter state
+        let currentFilter = 'all';
+
         // Load and display saved articles
         function loadSavedArticles() {
             const grid = document.getElementById('saved-articles-grid');
             const empty = document.getElementById('saved-empty');
             const saved = JSON.parse(localStorage.getItem('savedArticles') || '[]');
 
-            if (saved.length === 0) {
+            // Create folder filters
+            createFolderFilters(saved);
+
+            // Filter articles
+            const filtered = currentFilter === 'all'
+                ? saved
+                : saved.filter(item => item.folder === currentFilter);
+
+            if (filtered.length === 0) {
                 grid.innerHTML = '';
                 empty.style.display = 'flex';
                 return;
             }
 
             empty.style.display = 'none';
-            grid.innerHTML = saved.map((article, index) => createNewsCard(article, index, true)).join('');
+            grid.innerHTML = filtered.map((item, index) => createNewsCard(item.article, index, item.folder)).join('');
 
             // Add click handlers
             grid.querySelectorAll('.news-card').forEach((card, index) => {
                 card.addEventListener('click', (e) => {
                     if (!e.target.closest('.save-article-btn')) {
-                        openArticleModal(saved[index]);
+                        openArticleModal(filtered[index].article);
                     }
                 });
             });
@@ -222,20 +235,62 @@
             grid.querySelectorAll('.save-article-btn').forEach((btn, index) => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    toggleSaveArticle(saved[index]);
-                    loadSavedArticles(); // Reload to update UI
+                    unsaveArticle(filtered[index].article);
                 });
             });
         }
 
-        function createNewsCard(article, index, showSaveBtn = false) {
+        // Create folder filter buttons
+        function createFolderFilters(saved) {
+            const header = document.querySelector('.section-header');
+            let filtersDiv = document.getElementById('folder-filters');
+
+            if (!filtersDiv) {
+                filtersDiv = document.createElement('div');
+                filtersDiv.id = 'folder-filters';
+                filtersDiv.className = 'folder-filters';
+                header.appendChild(filtersDiv);
+            }
+
+            // Get unique folders
+            const folders = {};
+            saved.forEach(item => {
+                const folder = item.folder || 'Default';
+                folders[folder] = (folders[folder] || 0) + 1;
+            });
+
+            // Create filter buttons
+            let html = `
+                <button class="folder-filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-folder="all">
+                    📚 All <span class="count">${saved.length}</span>
+                </button>
+            `;
+
+            Object.keys(folders).sort().forEach(folder => {
+                html += `
+                    <button class="folder-filter-btn ${currentFilter === folder ? 'active' : ''}" data-folder="${folder}">
+                        📁 ${folder} <span class="count">${folders[folder]}</span>
+                    </button>
+                `;
+            });
+
+            filtersDiv.innerHTML = html;
+
+            // Add click handlers
+            filtersDiv.querySelectorAll('.folder-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentFilter = btn.dataset.folder;
+                    loadSavedArticles();
+                });
+            });
+        }
+
+        function createNewsCard(article, index, folder) {
             const imageHTML = article.urlToImage
                 ? `<img src="${article.urlToImage}" alt="${article.title}" class="news-image">`
                 : '<div class="news-image-placeholder">📰</div>';
 
             const trendingBadge = index < 3 ? '<span class="trending-badge">⚡ TRENDING</span>' : '';
-            const isSaved = checkIfSaved(article);
-            const saveBtn = `<button class="save-article-btn" title="${isSaved ? 'Unsave' : 'Save'} article">${isSaved ? '🔖' : '🔗'}</button>`;
 
             return `
                 <article class="news-card">
@@ -250,37 +305,27 @@
                         <p class="news-description">${article.description || ''}</p>
                         <div class="news-footer">
                             <span class="read-more">Read Article →</span>
-                            ${saveBtn}
+                            <span class="folder-badge">📁 ${folder}</span>
+                            <button class="save-article-btn" title="Remove from saved">🔖</button>
                         </div>
                     </div>
                 </article>
             `;
         }
 
-        function checkIfSaved(article) {
-            const saved = JSON.parse(localStorage.getItem('savedArticles') || '[]');
-            return saved.some(a => a.url === article.url);
-        }
-
-        function toggleSaveArticle(article) {
+        function unsaveArticle(article) {
             let saved = JSON.parse(localStorage.getItem('savedArticles') || '[]');
-            const index = saved.findIndex(a => a.url === article.url);
-
-            if (index > -1) {
-                saved.splice(index, 1);
-                showNotification('Article removed from saved', 'info');
-            } else {
-                saved.unshift(article);
-                showNotification('Article saved', 'success');
-            }
-
+            saved = saved.filter(item => item.article.url !== article.url);
             localStorage.setItem('savedArticles', JSON.stringify(saved));
+            showNotification('Article removed from saved', 'info');
+            loadSavedArticles();
         }
 
         // Clear all saved articles
         document.getElementById('clear-saved-btn')?.addEventListener('click', () => {
             if (confirm('Are you sure you want to clear all saved articles?')) {
                 localStorage.removeItem('savedArticles');
+                currentFilter = 'all';
                 loadSavedArticles();
                 showNotification('All saved articles cleared', 'info');
             }
