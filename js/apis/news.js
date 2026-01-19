@@ -294,8 +294,11 @@ function createNewsCard(article, index) {
                 <p class="news-description">${description || 'No description available.'}</p>
                 <div class="news-footer">
                     <span class="read-more">
-                        Read Article 🔗
+                        Read Article →
                     </span>
+                    <button class="save-article-btn" onclick='event.stopPropagation(); window.toggleSaveArticle && window.toggleSaveArticle(${articleJSON})' title="Save article">
+                        🔗
+                    </button>
                 </div>
             </div>
         </article>
