@@ -22,11 +22,13 @@ function initializeSidebar() {
 }
 
 function navigateToPage(page) {
-    // Update active nav item
-    document.querySelectorAll('.nav-item').forEach(item => {
+    // Update active nav item in both sidebar and bottom nav
+    document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+    document.querySelectorAll(`[data-page="${page}"]`).forEach(item => {
+        item.classList.add('active');
+    });
 
     // Update current page
     currentPage = page;
